@@ -114,6 +114,7 @@ namespace DuplicateExtensionFinder
         private static readonly string[] _manifestNames = new[] { "extension.vsixmanifest", "extension.vsixmanifest.deleteme" };
 
         private static readonly string _programFilesFolder = Environment.GetFolderPath(Environment.Is64BitOperatingSystem ? Environment.SpecialFolder.ProgramFilesX86 : Environment.SpecialFolder.ProgramFiles);
+        private static readonly string _programFiles64Folder  = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
         private static readonly string _vsGlobalExtensionFolderFormat = Path.Combine(_programFilesFolder, @"Microsoft Visual Studio {0}.0\Common7\IDE\Extensions");
 
         public VisualStudioInstance(string name, IEnumerable<string> extensionDirectories)
@@ -128,9 +129,9 @@ namespace DuplicateExtensionFinder
                 {
                     ExtensionDirectories.Add(string.Format(CultureInfo.InvariantCulture, _vsGlobalExtensionFolderFormat, (int)version));
                 }
-                else if ((int) version == 15)
+                else if ((int) version >= 15)
                 {
-                    ExtensionDirectories.Add(FindVs15GlobalExtensionFolder());
+                    ExtensionDirectories.Add(FindVs15GlobalExtensionFolder((int)version));
                 }
 
                 ExtensionDirectories = ExtensionDirectories
@@ -219,14 +220,25 @@ namespace DuplicateExtensionFinder
             return null;
         }
 
-        private static string FindVs15GlobalExtensionFolder()
+        private static string FindVs15GlobalExtensionFolder(int version)
         {
-            var root = new DirectoryInfo(Path.Combine(_programFilesFolder, "Microsoft Visual Studio", "2017"));
+            var root = new DirectoryInfo(Path.Combine(version >= 17 ? _programFiles64Folder : _programFilesFolder, "Microsoft Visual Studio", VsVersionYear(version)));
             var folder = root.EnumerateDirectories("Extensions", SearchOption.AllDirectories)
                 .FirstOrDefault(dir => string.Equals("IDE", dir.Parent?.Name, StringComparison.OrdinalIgnoreCase) 
                     && string.Equals("Common7", dir.Parent?.Parent?.Name, StringComparison.OrdinalIgnoreCase));
 
             return folder?.FullName;
+        }
+
+        private static string VsVersionYear(int version)
+        {
+            switch (version)
+            {
+                case 15: return "2017";
+                case 16: return "2019";
+                case 17: return "2022";
+                default: return "2017";
+            }
         }
     }
 

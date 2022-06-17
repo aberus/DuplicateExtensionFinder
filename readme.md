@@ -1,10 +1,10 @@
-# Duplicate Extension Finder for VS2010-2017
+# Duplicate Extension Finder for VS2010-2022
 
 [![Build status](https://ci.appveyor.com/api/projects/status/cfgak6mw0v8fg9d2?svg=true)](https://ci.appveyor.com/project/remcoros/duplicateextensionfinder)
 
 [Get the latest release here.](https://github.com/remcoros/DuplicateExtensionFinder/releases)
 
-Simple console tool to find duplicate extension folders / manifests for Visual Studio 201x extensions. Used by me to cleanup and fix duplicate extension loading errors.
+Simple console tool to find duplicate extension folders / manifests for Visual Studio 20xx extensions. Used by me to cleanup and fix duplicate extension loading errors.
 
 Extensions that mysteriously disable themselves can be an indicator of duplicate extensions.
 
@@ -13,6 +13,7 @@ Searches for extensions (by default) in
  * `%LOCALAPPDATA%\Microsoft\VisualStudio\1x.0\Extensions`
  * `C:\Program Files (x86)\Microsoft Visual Studio 1x.0\Common7\IDE\Extensions`
  * `C:\Program Files (x86)\Microsoft Visual Studio\...\Common7\IDE\Extensions`
+ * `C:\Program Files\Microsoft Visual Studio\...\Common7\IDE\Extensions`
 
 You can override this and specify one or multiple paths on the command line.
 
